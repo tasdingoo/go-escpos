@@ -82,7 +82,7 @@ func (p *Printer) Print1(data string, charset string) error {
 		return nil
 	}
 
-	b, _, err := converter.Encode([]byte(data))
+	b, _, err := converter.Encode1([]byte(data), charset)
 	if err != nil {
 		return err
 	}
