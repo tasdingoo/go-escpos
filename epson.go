@@ -12,6 +12,7 @@ var ErrorNoDevicesFound = errors.New("No devices found")
 // fufilled by either tinygoConverter or latinx
 type characterConverter interface {
 	Encode(utf_8 []byte) (latin []byte, success int, err error)
+	Encode1(utf_8 []byte, charset string) (latin []byte, success int, err error)
 }
 
 type Printer struct {
@@ -61,6 +62,22 @@ func (p *Printer) Feed(n int) error {
 // Print prints a string
 // the data is re-encoded from Go's UTF-8 to ISO8859-15
 func (p *Printer) Print(data string) error {
+	if data == "" {
+		return nil
+	}
+
+	b, _, err := converter.Encode1([]byte(data), "GBK")
+	if err != nil {
+		return err
+	}
+	data = string(b)
+
+	data = textReplace(data)
+
+	return p.write(data)
+}
+
+func (p *Printer) Print1(data string, charset string) error {
 	if data == "" {
 		return nil
 	}

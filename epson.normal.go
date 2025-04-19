@@ -24,8 +24,13 @@ var converter characterConverter = zhCharacterConverter{}
 
 type zhCharacterConverter struct{}
 
+// Encode1 implements characterConverter.
+func (t zhCharacterConverter) Encode1(utf_8 []byte, charset string) (latin []byte, success int, err error) {
+	return ConvertByte2String(utf_8, charset), 1, nil
+}
+
 func (t zhCharacterConverter) Encode(utf_8 []byte) (latin []byte, success int, err error) {
-	return ConvertByte2String(utf_8, "GB18030"), 1, nil
+	return ConvertByte2String(utf_8, "GBK"), 1, nil
 }
 
 func ConvertByte2String(b []byte, charset string) []byte {
@@ -34,6 +39,9 @@ func ConvertByte2String(b []byte, charset string) []byte {
 	switch charset {
 	case "GB18030":
 		var decodeBytes, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(b)
+		str = decodeBytes
+	case "GBK":
+		var decodeBytes, _ = simplifiedchinese.GBK.NewDecoder().Bytes(b)
 		str = decodeBytes
 	case "UTF8":
 		fallthrough
