@@ -1,4 +1,4 @@
-module github.com/mect/go-escpos
+module github.com/tasdingoo/go-escpos
 
 go 1.23.0
 
