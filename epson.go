@@ -28,7 +28,7 @@ func NewPrinterByRW(rwc io.ReadWriteCloser) (*Printer, error) {
 }
 
 // Init sends an init signal
-func (p *Printer) Init() error {
+func (p *Printer) Init(encoding int) error {
 	// send init command
 	err := p.write("\x1B@")
 	if err != nil {
@@ -36,7 +36,11 @@ func (p *Printer) Init() error {
 	}
 
 	// send encoding ISO8859-15
-	return p.write(fmt.Sprintf("\x1Bt%c", 40))
+	var enc = fmt.Sprintf("\x1Bt%c", 40)
+	if encoding < 15 && encoding > 0 {
+		enc = fmt.Sprintf("\x1BR%c", encoding)
+	}
+	return p.write(enc)
 }
 
 // End sends an end signal to finalize the print job
