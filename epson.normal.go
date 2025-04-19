@@ -12,12 +12,37 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bjarneh/latinx"
+	// "github.com/bjarneh/latinx"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/aztec"
+	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
-var converter characterConverter = latinx.Get(latinx.ISO_8859_15)
+// var converter characterConverter = latinx.Get(latinx.ISO_8859_15)
+
+var converter characterConverter = zhCharacterConverter{}
+
+type zhCharacterConverter struct{}
+
+func (t zhCharacterConverter) Encode(utf_8 []byte) (latin []byte, success int, err error) {
+	return ConvertByte2String(utf_8, "GB18030"), 1, nil
+}
+
+func ConvertByte2String(b []byte, charset string) []byte {
+
+	var str []byte
+	switch charset {
+	case "GB18030":
+		var decodeBytes, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(b)
+		str = decodeBytes
+	case "UTF8":
+		fallthrough
+	default:
+		str = b
+	}
+
+	return str
+}
 
 // NewUSBPrinter returns a new printer with a USB Vendor and Product ID
 // if both are 0 it will return the first found Epson POS printer
