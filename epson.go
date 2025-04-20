@@ -37,7 +37,7 @@ func (p *Printer) Init(encoding int) error {
 
 	// send encoding ISO8859-15
 	var enc = fmt.Sprintf("\x1Bt%c", 40)
-	if encoding < 15 && encoding > 0 {
+	if encoding <= 15 && encoding >= 0 {
 		enc = fmt.Sprintf("\x1BR%c", encoding)
 	}
 	return p.write(enc)
